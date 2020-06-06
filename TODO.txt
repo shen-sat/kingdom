@@ -1,0 +1,18 @@
+Scoping:
+- create floor
+- ensure player can move along floor
+- generesize this so any sprite is automatically placed on floor
+
+Done:
+- create map green
+- create map blue
+- create player
+- spawn player near right border
+- create player movement
+- logic - when player is in map green and goes past x then map changes to blue and vice versa
+- create rabbit
+- spawn rabbit near left border
+- create rabbit always right movement
+- logic - same as player's
+- check that rabbit updates green map position when player on blue screen and vice versa (once rabbit moves into blue screen)
+
