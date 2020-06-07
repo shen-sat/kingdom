@@ -1,7 +1,10 @@
 Scoping:
-- create floor
-- ensure player can move along floor
-- generesize this so any sprite is automatically placed on floor
+- create a cost for campfire
+- -= cost if x is held when overlapping with camp_fire (in same code that generates coin to spend)
+- once cost = 0 for campfire, wait one sec then: 
+	- change camp_fire sprite
+	- remove coin and cost slot
+
 
 Done:
 - create map green
@@ -15,4 +18,8 @@ Done:
 - create rabbit always right movement
 - logic - same as player's
 - check that rabbit updates green map position when player on blue screen and vice versa (once rabbit moves into blue screen)
-
+- create floor
+- ensure player can move along floor
+- generate coins if camp fire and player overlap and X is pressed and held
+- only allow a coin to generate IF king can afford it
+- populate cost if X is held
