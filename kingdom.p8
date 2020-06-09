@@ -36,7 +36,13 @@ function run_level()
    x = 64,
    y = ground_y - 8,
    width = 8,
-   height = 8
+   height = 8,
+   purchased = false,
+   cost = {
+    sprite = 8,
+    x = 64,
+    y = ground_y - 8 - 16
+   }
   }
 
   cam = {
@@ -80,6 +86,9 @@ function level_draw()
  end
  spr(player.sprite,player.x,player.y)
  spr(camp_fire.sprite,camp_fire.x,camp_fire.y)
+ if is_overlapping(player, camp_fire) and not camp_fire.purchased then
+   spr(camp_fire.cost.sprite,camp_fire.cost.x,camp_fire.cost.y)
+ end
  for c in all(coins) do
   spr(c.sprite,c.x,c.y)
  end
