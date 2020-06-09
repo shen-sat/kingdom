@@ -17,6 +17,7 @@ function run_level()
   map_end_x = 256
   coin_score = 0
   coins = {}
+  purchase_time = 1
   
   player = {
    sprite = 0,
@@ -41,7 +42,10 @@ function run_level()
    cost = {
     sprite = 8,
     x = 64,
-    y = ground_y - 8 - 16
+    y = ground_y - 8 - 16,
+    value = 1,
+    spent = 0,
+    purchase_time = 0
    }
   }
 
@@ -73,6 +77,23 @@ function level_update()
   end 
  end
 
+ if is_overlapping(player, camp_fire) and btnp(5) then
+  
+  if camp_fire.cost.spent < camp_fire.cost.value then
+   if coin_score > 0 then
+    coin_score -= 1
+    camp_fire.cost.spent += 1
+    camp_fire.cost.sprite = 5
+   end
+  elseif not camp_fire.purchased then
+   camp_fire.cost.purchase_time += (1/3)
+   if camp_fire.cost.purchase_time >= purchase_time then
+    camp_fire.purchased = true
+    camp_fire.sprite = 7
+   end
+  end
+ end
+
 end
 
 
@@ -81,6 +102,7 @@ function level_draw()
  cls()
  map(0,0)
  print('coins_score:'..coin_score, 10, 10, 7)
+ print(camp_fire.cost.purchase_time, 20, 20, 7)
  for cst in all(cost_icons) do
   spr(cst.sprite,cst.x,cst.y)
  end
