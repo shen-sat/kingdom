@@ -29,8 +29,11 @@ function run_level()
     return self.x + self.width/2
    end
   }
+  --coins
   local first_coin = make_coin(20, ground_y - 8)
+  local second_coin = make_coin(30, ground_y - 8)
   add(coins,first_coin)
+  add(coins,second_coin)
 
   camp_fire = {
    sprite = 6,
@@ -43,7 +46,7 @@ function run_level()
     sprite = 8,
     x = 64,
     y = ground_y - 8 - 16,
-    value = 1,
+    value = 2,
     spent = 0,
     purchase_time = 0
    }
@@ -83,7 +86,7 @@ function level_update()
    if coin_score > 0 then
     coin_score -= 1
     camp_fire.cost.spent += 1
-    camp_fire.cost.sprite = 5
+    -- camp_fire.cost.sprite = 5
    end
   elseif not camp_fire.purchased then
    camp_fire.cost.purchase_time += (1/3)
@@ -108,9 +111,21 @@ function level_draw()
  end
  spr(player.sprite,player.x,player.y)
  spr(camp_fire.sprite,camp_fire.x,camp_fire.y)
+ 
  if is_overlapping(player, camp_fire) and not camp_fire.purchased then
-   spr(camp_fire.cost.sprite,camp_fire.cost.x,camp_fire.cost.y)
+  local adjust = 0
+  local spent = camp_fire.cost.spent
+  local remaining = camp_fire.cost.value - camp_fire.cost.spent
+  for n=0,spent - 1 do
+   spr(5,camp_fire.cost.x + adjust,camp_fire.cost.y)
+   adjust+=8
+  end
+  for n=0,remaining - 1 do
+   spr(8,camp_fire.cost.x + adjust,camp_fire.cost.y)
+   adjust+=8
+  end
  end
+ 
  for c in all(coins) do
   spr(c.sprite,c.x,c.y)
  end
