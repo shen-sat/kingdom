@@ -17,7 +17,10 @@ function run_level()
   map_end_x = 256
   coin_score = 0
   coins = {}
-  purchase_time = 1
+  buy_time = 1
+  buyable_items = {}
+  button_pressed = false
+  button_pressed_counter = 0
   
   player = {
    sprite = 0,
@@ -36,21 +39,30 @@ function run_level()
   add(coins,second_coin)
 
   camp_fire = {
-   sprite = 6,
+   sprites = {6,7},
+   sprite_index = 1,
+   sprite = function(self)
+    return self.sprites[self.sprite_index]
+   end,
+   sprite_upgrade = function(self)
+    self.sprite_index += 1
+   end,
    x = 64,
    y = ground_y - 8,
    width = 8,
    height = 8,
-   purchased = false,
+   is_bought = false,
+   reset_cost = function(self)
+    self.cost.spent = 0
+    self.cost.buy_time = 0
+   end,
    cost = {
-    sprite = 8,
-    x = 64,
-    y = ground_y - 8 - 16,
     value = 2,
     spent = 0,
-    purchase_time = 0
+    buy_time = 0
    }
   }
+  add(buyable_items,camp_fire)
 
   cam = {
    x = 0,
@@ -80,21 +92,22 @@ function level_update()
   end 
  end
 
- if is_overlapping(player, camp_fire) and btnp(5) then
-  
-  if camp_fire.cost.spent < camp_fire.cost.value then
-   if coin_score > 0 then
-    coin_score -= 1
-    camp_fire.cost.spent += 1
-    -- camp_fire.cost.sprite = 5
-   end
-  elseif not camp_fire.purchased then
-   camp_fire.cost.purchase_time += (1/3)
-   if camp_fire.cost.purchase_time >= purchase_time then
-    camp_fire.purchased = true
-    camp_fire.sprite = 7
-   end
+ if btn(5) then
+  button_pressed = true
+  for b in all(buyable_items) do
+   check_overlap_and_buy_item(b)
   end
+ else
+  button_pressed = false
+  for b in all(buyable_items) do
+   check_overlap_and_reset_item_cost(b)
+  end
+ end
+
+ if button_pressed then
+  button_pressed_counter += 1
+ else
+  button_pressed_counter = 0
  end
 
 end
@@ -105,29 +118,59 @@ function level_draw()
  cls()
  map(0,0)
  print('coins_score:'..coin_score, 10, 10, 7)
- print(camp_fire.cost.purchase_time, 20, 20, 7)
+ print(counter, 20, 20, 7)
  for cst in all(cost_icons) do
   spr(cst.sprite,cst.x,cst.y)
  end
  spr(player.sprite,player.x,player.y)
- spr(camp_fire.sprite,camp_fire.x,camp_fire.y)
+ spr(camp_fire:sprite(),camp_fire.x,camp_fire.y)
  
- if is_overlapping(player, camp_fire) and not camp_fire.purchased then
-  local adjust = 0
-  local spent = camp_fire.cost.spent
-  local remaining = camp_fire.cost.value - camp_fire.cost.spent
-  for n=0,spent - 1 do
-   spr(5,camp_fire.cost.x + adjust,camp_fire.cost.y)
-   adjust+=8
-  end
-  for n=0,remaining - 1 do
-   spr(8,camp_fire.cost.x + adjust,camp_fire.cost.y)
-   adjust+=8
-  end
+ for item in all(buyable_items) do
+  if is_overlapping(player,item) and not item.is_bought then
+   draw_cost(item)
+  end 
  end
- 
+
  for c in all(coins) do
   spr(c.sprite,c.x,c.y)
+ end
+end
+
+function check_overlap_and_reset_item_cost(item)
+ if is_overlapping(player, item) and not item.is_bought then
+  coin_score += item.cost.spent
+  item:reset_cost()
+ end
+end
+
+function check_overlap_and_buy_item(item)
+ if is_overlapping(player, item) and (button_pressed_counter % 10 == 0) then
+  if item.cost.spent < item.cost.value then
+   if coin_score > 0 then
+    coin_score -= 1
+    item.cost.spent += 1
+   end
+  elseif not item.is_bought then
+   item.cost.buy_time += 1/2
+   if item.cost.buy_time >= buy_time then
+    item.is_bought = true
+    item:sprite_upgrade()
+   end
+  end
+ end
+end
+
+function draw_cost(item)
+ local adjust = 0
+ local spent = item.cost.spent
+ local remaining = item.cost.value - item.cost.spent
+ for n=0,spent - 1 do
+  spr(5,item.x + adjust,item.y - 16)
+  adjust+=8
+ end
+ for n=0,remaining - 1 do
+  spr(8,item.x + adjust,item.y - 16)
+  adjust+=8
  end
 end
 
