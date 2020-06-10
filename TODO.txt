@@ -1,9 +1,7 @@
 Scoping:
-- create a cost for campfire
-- -= cost if x is held when overlapping with camp_fire (in same code that generates coin to spend)
-- once cost = 0 for campfire, wait one sec then: 
-	- change camp_fire sprite
-	- remove coin and cost slot
+- refactor - what happens if is_bought is a function?
+- if X is pressed then buy arrow
+- refactor to draw and update all buyable objects
 
 
 Done:
@@ -23,3 +21,11 @@ Done:
 - generate coins if camp fire and player overlap and X is pressed and held
 - only allow a coin to generate IF king can afford it
 - populate cost if X is held
+- create a cost for campfire
+- -= cost if x is held when overlapping with camp_fire (in same code that generates coin to spend)
+- once cost = 0 for campfire, wait one sec then: 
+	- change camp_fire sprite
+	- remove coin and cost slot
+- if camp_fire bought then level 1 reached
+- if level one reached then spawn archery shop
+- if overlap with archery_shop, show cost
