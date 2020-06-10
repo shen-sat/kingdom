@@ -118,17 +118,18 @@ function level_draw()
  cls()
  map(0,0)
  print('coins_score:'..coin_score, 10, 10, 7)
- print(counter, 20, 20, 7)
  for cst in all(cost_icons) do
   spr(cst.sprite,cst.x,cst.y)
  end
  spr(player.sprite,player.x,player.y)
  spr(camp_fire:sprite(),camp_fire.x,camp_fire.y)
- 
  for item in all(buyable_items) do
   if is_overlapping(player,item) and not item.is_bought then
    draw_cost(item)
   end 
+ end
+ if is_overlapping(player, camp_fire) and not camp_fire.is_bought then
+  print('hold x to light fire',64 - 40,30,7)
  end
 
  for c in all(coins) do
