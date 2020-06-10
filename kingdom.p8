@@ -44,13 +44,9 @@ function run_level()
   add(coins,fourth_coin)
 
   camp_fire = {
-   sprites = {6,7},
-   sprite_index = 1,
-   sprite = function(self)
-    return self.sprites[self.sprite_index]
-   end,
-   sprite_upgrade = function(self)
-    self.sprite_index += 1
+   sprite = 6,
+   bought_action = function(self)
+    self.sprite = 7
     self.is_bought = true
    end,
    x = 64,
@@ -73,10 +69,9 @@ function run_level()
    sprite = 16,
    sprite_width = 1,
    sprite_height = 2,
-   sprite_upgrade = function(self)
+   bought_action = function(self)
     self.arrows += 1
     self.cost.spent = 0
-    self.is_bought = false
    end,
    x = 96,
    y = ground_y - 16,
@@ -163,7 +158,7 @@ function level_draw()
  end
 
  spr(player.sprite,player.x,player.y)
- spr(camp_fire:sprite(),camp_fire.x,camp_fire.y)
+ spr(camp_fire.sprite,camp_fire.x,camp_fire.y)
  for item in all(buyable_items) do
   if is_overlapping(player,item) and not item.is_bought then
    draw_cost(item)
@@ -197,10 +192,10 @@ function check_overlap_and_buy_item(item)
     coin_score -= 1
     item.cost.spent += 1
    end
-  elseif not item.is_bought then
+  else
    item.cost.buy_time += 1/2
    if item.cost.buy_time >= buy_time then
-    item:sprite_upgrade() -- this can change the is_bought attribute in campfire
+    item:bought_action()
    end
   end
  end
