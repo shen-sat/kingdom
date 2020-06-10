@@ -1,6 +1,7 @@
 Scoping:
-- refactor - what happens if is_bought is a function?
 - if X is pressed then buy arrow
+	- create make_arrow method (takes an x and y)
+	- call this method from bought_action in archery shop
 - refactor to draw and update all buyable objects
 
 

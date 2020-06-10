@@ -162,7 +162,14 @@ function level_draw()
  for item in all(buyable_items) do
   if is_overlapping(player,item) and not item.is_bought then
    draw_cost(item)
-  end 
+  end
+  if item.arrows then
+   local start_x = item.x + item.width
+   for a=1,item.arrows do
+    line(start_x,item.y,start_x,item.y + 8,7)
+    start_x += 2
+   end
+  end
  end
  if is_overlapping(player, camp_fire) and not camp_fire.is_bought then
   print('hold x to light fire',64 - 40,30,7)
@@ -176,6 +183,8 @@ function level_draw()
   spr(archery_shop.sprite,archery_shop.x,ground_y - archery_shop.height,archery_shop.sprite_width,archery_shop.sprite_height)
   spr(archery_shop.sprite,archery_shop.x + (archery_shop.sprite_width * 8),ground_y - archery_shop.height,archery_shop.sprite_width,archery_shop.sprite_height, true, false)
  end
+
+
 end
 
 function check_overlap_and_reset_item_cost(item)
@@ -241,6 +250,15 @@ function make_coin(x,y)
   height = 8
  }
  return coin
+end
+
+function make_arrow(x,y)
+ local arrow = {
+  x = x,
+  y = y,
+  col = 14
+ }
+ return arrow
 end
 
 __gfx__
