@@ -49,7 +49,10 @@ function run_level()
     value = 2,
     spent = 0,
     buy_time = 0
-   }
+   },
+   draw_self = function(self)
+    spr(self.sprite,self.x,self.y)
+   end
   }
 
   archery_shop = {
@@ -77,6 +80,10 @@ function run_level()
      line(start_x,self.y,start_x,self.y + 8,7)
      start_x += 2
     end
+   end,
+   draw_self = function(self)
+    spr(self.sprite,self.x,ground_y - self.height,self.sprite_width,self.sprite_height)
+    spr(self.sprite,self.x + (self.sprite_width * 8),ground_y - self.height,self.sprite_width,self.sprite_height, true, false)
    end
   }
 
@@ -132,14 +139,9 @@ function level_draw()
  cls()
  map(0,0)
  print('coins_score:'..coin_score, 10, 10, 7)
- print(counter, 20, 20, 7)
- for cst in all(cost_icons) do
-  spr(cst.sprite,cst.x,cst.y)
- end
-
  spr(player.sprite,player.x,player.y)
- spr(camp_fire.sprite,camp_fire.x,camp_fire.y)
  for item in all(buyable_items) do
+  item:draw_self()
   if is_overlapping(player,item) and not item.is_bought then
    draw_cost(item)
   end
@@ -150,17 +152,9 @@ function level_draw()
  if is_overlapping(player, camp_fire) and not camp_fire.is_bought then
   print('hold x to light fire',64 - 40,30,7)
  end
-
  for c in all(coins) do
   spr(c.sprite,c.x,c.y)
  end
-
- if level == 1 then
-  spr(archery_shop.sprite,archery_shop.x,ground_y - archery_shop.height,archery_shop.sprite_width,archery_shop.sprite_height)
-  spr(archery_shop.sprite,archery_shop.x + (archery_shop.sprite_width * 8),ground_y - archery_shop.height,archery_shop.sprite_width,archery_shop.sprite_height, true, false)
- end
-
-
 end
 
 function manage_level_changes()

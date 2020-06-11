@@ -1,5 +1,10 @@
 Scoping:
-- refactor to draw and update all buyable objects
+ - draw peasants
+ - draw civilian
+ - change level 1 to incude adding a peasnt object to buyable objects
+ - see if you can see cost and buy peasant
+ - upon bought, peasnt should turn into civ
+ - upon bought civ should head to campfire 
 
 
 Done:
@@ -30,3 +35,4 @@ Done:
 - if X is pressed then buy arrow
 	- generesice arrows to products
 	- if an items has products then draw those products (the resposnibility of drawing those products should be with the shop)
+- refactor to draw and update all buyable objects
