@@ -123,12 +123,7 @@ function level_update()
  end
 
  manage_button_pressed_counter()
-
- if camp_fire.is_bought and level == 0 then
-  level = 1
-  add(buyable_items,archery_shop)
- end
-
+ manage_level_changes()
 end
 
 
@@ -166,6 +161,13 @@ function level_draw()
  end
 
 
+end
+
+function manage_level_changes()
+ if camp_fire.is_bought and level == 0 then
+  level = 1
+  add(buyable_items,archery_shop)
+ end
 end
 
 function manage_button_pressed_counter()
