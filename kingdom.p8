@@ -33,16 +33,7 @@ function run_level()
     return self.x + self.width/2
    end
   }
-  --coins
-  local first_coin = make_coin(20, ground_y - 8)
-  local second_coin = make_coin(30, ground_y - 8)
-  local third_coin = make_coin(40, ground_y - 8)
-  local fourth_coin = make_coin(50, ground_y - 8)
-  add(coins,first_coin)
-  add(coins,second_coin)
-  add(coins,third_coin)
-  add(coins,fourth_coin)
-
+  
   camp_fire = {
    sprite = 6,
    bought_action = function(self)
@@ -70,7 +61,7 @@ function run_level()
    sprite_width = 1,
    sprite_height = 2,
    bought_action = function(self)
-    self.arrows += 1
+    self.products += 1
     self.cost.spent = 0
    end,
    x = 96,
@@ -87,7 +78,14 @@ function run_level()
     spent = 0,
     buy_time = 0
    },
-   arrows = 0
+   products = 0,
+   draw_products = function(self)
+    local start_x = self.x + self.width
+    for a=1,self.products do
+     line(start_x,self.y,start_x,self.y + 8,7)
+     start_x += 2
+    end
+   end
   }
 
 
@@ -163,12 +161,8 @@ function level_draw()
   if is_overlapping(player,item) and not item.is_bought then
    draw_cost(item)
   end
-  if item.arrows then
-   local start_x = item.x + item.width
-   for a=1,item.arrows do
-    line(start_x,item.y,start_x,item.y + 8,7)
-    start_x += 2
-   end
+  if item.products then
+   item:draw_products()
   end
  end
  if is_overlapping(player, camp_fire) and not camp_fire.is_bought then

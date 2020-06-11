@@ -1,7 +1,4 @@
 Scoping:
-- if X is pressed then buy arrow
-	- create make_arrow method (takes an x and y)
-	- call this method from bought_action in archery shop
 - refactor to draw and update all buyable objects
 
 
@@ -30,3 +27,6 @@ Done:
 - if camp_fire bought then level 1 reached
 - if level one reached then spawn archery shop
 - if overlap with archery_shop, show cost
+- if X is pressed then buy arrow
+	- generesice arrows to products
+	- if an items has products then draw those products (the resposnibility of drawing those products should be with the shop)
