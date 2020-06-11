@@ -80,7 +80,6 @@ function run_level()
    end
   }
 
-
   add(buyable_items,camp_fire)
 
   cam = {
@@ -103,14 +102,14 @@ function level_update()
  cam.x = player.x - 64 + (player.width/2)
  manage_out_of_bounds(cam)
  camera(cam.x,0)
-
+ --collect coins
  for c in all(coins) do
   if player:center_x() > c.x and player:center_x() < (c.x + c.width) then 
    del(coins,c)
    coin_score +=1
   end 
  end
-
+ --buy button
  if btn(5) then
   button_pressed = true
   for b in all(buyable_items) do
@@ -123,11 +122,7 @@ function level_update()
   end
  end
 
- if button_pressed then
-  button_pressed_counter += 1
- else
-  button_pressed_counter = 0
- end
+ manage_button_pressed_counter()
 
  if camp_fire.is_bought and level == 0 then
   level = 1
@@ -171,6 +166,14 @@ function level_draw()
  end
 
 
+end
+
+function manage_button_pressed_counter()
+ if button_pressed then
+  button_pressed_counter += 1
+ else
+  button_pressed_counter = 0
+ end
 end
 
 function reset_cost(item)
