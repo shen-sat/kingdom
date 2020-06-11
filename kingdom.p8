@@ -33,7 +33,7 @@ function run_level()
     return self.x + self.width/2
    end
   }
-  
+
   camp_fire = {
    sprite = 6,
    bought_action = function(self)
@@ -45,10 +45,6 @@ function run_level()
    width = 8,
    height = 8,
    is_bought = false,
-   reset_cost = function(self)
-    self.cost.spent = 0
-    self.cost.buy_time = 0
-   end,
    cost = {
     value = 2,
     spent = 0,
@@ -69,10 +65,6 @@ function run_level()
    width = 16,
    height = 16,
    is_bought = false,
-   reset_cost = function(self)
-    self.cost.spent = 0
-    self.cost.buy_time = 0
-   end,
    cost = {
     value = 2,
     spent = 0,
@@ -181,10 +173,15 @@ function level_draw()
 
 end
 
+function reset_cost(item)
+ item.cost.spent = 0
+ item.cost.buy_time = 0
+end
+
 function check_overlap_and_reset_item_cost(item)
  if is_overlapping(player, item) and not item.is_bought then
   coin_score += item.cost.spent
-  item:reset_cost()
+  reset_cost(item)
  end
 end
 
