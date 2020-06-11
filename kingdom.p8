@@ -22,10 +22,11 @@ function run_level()
   button_pressed = false
   button_pressed_counter = 0
   level = 0
+  civilians = {}
   
   player = {
    sprite = 0,
-   x = 10,
+   x = 130,
    y = ground_y - 8,
    width = 8,
    height = 8,
@@ -38,9 +39,10 @@ function run_level()
    sprite = 10,
    bought_action = function(self)
     self.sprite = 9
-    self.is_bought = true
+    add(civilians,self)
+    del(buyable_items,self)
    end,
-   x = 50,
+   x = 150,
    y = ground_y - 8,
    width = 8,
    height = 8,
@@ -149,6 +151,19 @@ function level_update()
    check_overlap_and_reset_item_cost(b)
   end
  end
+ --move civilians
+ for civ in all(civilians) do
+   if (civ. x > camp_fire.x + 8 or civ. x < camp_fire.x - 8) then
+    local speed
+    if (civ.x - camp_fire.x > 0) then
+     speed = -1
+    else
+     speed = 1
+    end
+    civ.x += speed
+   end
+ end
+
 
  manage_button_pressed_counter()
  manage_level_changes()
@@ -176,6 +191,10 @@ function level_draw()
 
  for c in all(coins) do
   spr(c.sprite,c.x,c.y)
+ end
+
+ for civ in all(civilians) do
+  spr(civ.sprite,civ.x,civ.y)
  end
 
 end
