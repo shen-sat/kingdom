@@ -105,6 +105,20 @@ function run_level()
       }
      self.rnd_move = true
     end
+   end,
+   update = function(self)
+    if is_overlapping(self, archery_shop) and archery_shop.products > 0 then
+     archery_shop.products -= 1
+     add(hunters,make_hunter(self.x, self.y))
+     del(civilians,self)
+    end
+    self:choose_destination()
+    local speed = (self.x - self.destination.x > 0) and -1 or 1
+    if self.destination == archery_shop then
+     self.x += speed
+    else
+     if counter % 3 == 0 then self.x += speed end 
+    end
    end
   }
 
@@ -182,29 +196,10 @@ function level_update()
    check_overlap_and_reset_item_cost(b)
   end
  end
- --move civilians
+ --update civilians
  for civ in all(civilians) do
-  if is_overlapping(civ, archery_shop) and archery_shop.products > 0 then
-   archery_shop.products -= 1
-   local hunter = make_hunter(civ.x, civ.y)
-   add(hunters,hunter)
-   del(civilians,civ)
-  end
-  local speed
-  civ:choose_destination()
-  if (civ.x - civ.destination.x > 0) then
-   speed = -1
-  else
-   speed = 1
-  end
-  if civ.destination == archery_shop then
-   civ.x += speed
-  else
-   if counter % 3 == 0 then civ.x += speed end 
-  end
-  
+  civ:update()
  end
-
 
  manage_button_pressed_counter()
  manage_level_changes()
