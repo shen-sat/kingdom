@@ -11,6 +11,7 @@ function _update() game.update() end
 function _draw() game.draw() end
 
 function run_level()
+  foobar = false
   ground_y = 128 - 32
   camera_x = 0
   map_start_x = 0
@@ -27,6 +28,7 @@ function run_level()
   town_center = 64 + 4
   town_left_border = town_center - 48
   town_right_border = town_center + 48
+  hunters = {}
 
   
   player = {
@@ -182,6 +184,12 @@ function level_update()
  end
  --move civilians
  for civ in all(civilians) do
+  if is_overlapping(civ, archery_shop) and archery_shop.products > 0 then
+   archery_shop.products -= 1
+   local hunter = make_hunter(civ.x, civ.y)
+   add(hunters,hunter)
+   del(civilians,civ)
+  end
   local speed
   civ:choose_destination()
   if (civ.x - civ.destination.x > 0) then
@@ -230,6 +238,21 @@ function level_draw()
   spr(civ.sprite,civ.x,civ.y)
  end
 
+ for hunter in all(hunters) do
+  spr(hunter.sprite,hunter.x,hunter.y)
+ end
+
+end
+
+function make_hunter(x,y)
+ local hunter = {
+  sprite = 4,
+  x = x,
+  y = y,
+  width = 8,
+  height = 8
+ }
+ return hunter
 end
 
 function within_town(x)
