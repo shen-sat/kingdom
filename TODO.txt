@@ -1,5 +1,8 @@
 Scoping:
-
+- add random movement to civs once reached camp_fire
+- add another civ
+- when arrow is bought, rush civs to archery_shop
+- first civ to archery_shop gets promoted to hunter  
 
 
 Done:

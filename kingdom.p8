@@ -35,6 +35,27 @@ function run_level()
    end
   }
 
+  camp_fire = {
+   sprite = 6,
+   bought_action = function(self)
+    self.sprite = 7
+    self.is_bought = true
+   end,
+   x = 64,
+   y = ground_y - 8,
+   width = 8,
+   height = 8,
+   is_bought = false,
+   cost = {
+    value = 2,
+    spent = 0,
+    buy_time = 0
+   },
+   draw_self = function(self)
+    spr(self.sprite,self.x,self.y)
+   end
+  }
+
   peasant = {
    sprite = 10,
    bought_action = function(self)
@@ -54,27 +75,9 @@ function run_level()
    },
    draw_self = function(self)
     spr(self.sprite,self.x,self.y)
-   end
-  }
-
-  camp_fire = {
-   sprite = 6,
-   bought_action = function(self)
-    self.sprite = 7
-    self.is_bought = true
    end,
-   x = 64,
-   y = ground_y - 8,
-   width = 8,
-   height = 8,
-   is_bought = false,
-   cost = {
-    value = 2,
-    spent = 0,
-    buy_time = 0
-   },
-   draw_self = function(self)
-    spr(self.sprite,self.x,self.y)
+   destination_x = function(self)
+    return camp_fire.x
    end
   }
 
@@ -153,15 +156,13 @@ function level_update()
  end
  --move civilians
  for civ in all(civilians) do
-   if (civ. x > camp_fire.x + 8 or civ. x < camp_fire.x - 8) then
-    local speed
-    if (civ.x - camp_fire.x > 0) then
-     speed = -1
-    else
-     speed = 1
-    end
-    civ.x += speed
-   end
+  local speed
+  if (civ.x - civ:destination_x() > 0) then
+   speed = -1
+  else
+   speed = 1
+  end
+  civ.x += speed
  end
 
 
