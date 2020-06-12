@@ -23,6 +23,7 @@ function run_level()
   button_pressed_counter = 0
   level = 0
   civilians = {}
+  counter = 0
   
   player = {
    sprite = 0,
@@ -140,6 +141,7 @@ function run_level()
 end
 
 function level_update()
+ counter += 1
  --player
  if btn(0) then player.x -= 1 end
  if btn(1) then player.x += 1 end
@@ -178,7 +180,7 @@ function level_update()
   else
    speed = 1
   end
-  civ.x += speed
+  if counter % 3 == 0 then civ.x += speed end
  end
 
 
