@@ -76,8 +76,23 @@ function run_level()
    draw_self = function(self)
     spr(self.sprite,self.x,self.y)
    end,
+   rnd_move = false,
+   dest_x = camp_fire.x,
    destination_x = function(self)
-    return camp_fire.x
+    local camp_fire_center = camp_fire.x + 4
+    local left_border = camp_fire_center - 48
+    local right_border = camp_fire_center + 48
+
+    if self.x > (self.dest_x - 2) and self.x < (self.dest_x + 2) then self.rnd_move = false end
+
+    if within_town(self.x) then
+     if self.rnd_move == false then
+      self.dest_x = left_border + flr(rnd(right_border - left_border))
+      self.rnd_move = true
+     end
+    else
+     self.dest_x = camp_fire.x
+    end
    end
   }
 
@@ -157,7 +172,8 @@ function level_update()
  --move civilians
  for civ in all(civilians) do
   local speed
-  if (civ.x - civ:destination_x() > 0) then
+  civ:destination_x()
+  if (civ.x - civ.dest_x > 0) then
    speed = -1
   else
    speed = 1
@@ -198,6 +214,13 @@ function level_draw()
   spr(civ.sprite,civ.x,civ.y)
  end
 
+end
+
+function within_town(x)
+ local camp_fire_center = camp_fire.x + 4
+ local left_border = camp_fire_center - 48
+ local right_border = camp_fire_center + 48
+ return x > left_border and x < right_border
 end
 
 function manage_level_changes()
