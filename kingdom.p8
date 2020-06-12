@@ -61,7 +61,7 @@ function run_level()
    end
   }
 
-  peasant = {
+  civilian = {
    sprite = 10,
    bought_action = function(self)
     self.sprite = 9
@@ -85,7 +85,11 @@ function run_level()
    destination = camp_fire,
    choose_destination = function(self)
     if within_town(self.x) then
-     self:choose_rand_dest_in_town()
+     if archery_shop.products > 0 then
+      self.destination = archery_shop
+     else
+      self:choose_rand_dest_in_town()
+     end
     else
      self.destination = camp_fire
     end
@@ -185,7 +189,12 @@ function level_update()
   else
    speed = 1
   end
-  if counter % 3 == 0 then civ.x += speed end
+  if civ.destination == archery_shop then
+   civ.x += speed
+  else
+   if counter % 3 == 0 then civ.x += speed end 
+  end
+  
  end
 
 
@@ -232,7 +241,7 @@ function manage_level_changes()
  --  level = 1
  if btnp(4) then
   add(buyable_items,archery_shop)
-  add(buyable_items,peasant)
+  add(buyable_items,civilian)
  end
 end
 
