@@ -255,9 +255,9 @@ function within_town(x)
 end
 
 function manage_level_changes()
- -- if camp_fire.is_bought and level == 0 then
- --  level = 1
- if btnp(4) then
+ if camp_fire.is_bought and level == 0 then
+  level = 1
+ -- if btnp(4) then
   add(buyable_items,archery_shop)
   add(buyable_items,civilian)
  end
