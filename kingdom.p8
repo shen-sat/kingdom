@@ -24,6 +24,10 @@ function run_level()
   level = 0
   civilians = {}
   counter = 0
+  town_center = 64 + 4
+  town_left_border = town_center - 48
+  town_right_border = town_center + 48
+
   
   player = {
    sprite = 0,
@@ -42,7 +46,7 @@ function run_level()
     self.sprite = 7
     self.is_bought = true
    end,
-   x = 64,
+   x = town_center - 4,
    y = ground_y - 8,
    width = 8,
    height = 8,
@@ -78,21 +82,22 @@ function run_level()
     spr(self.sprite,self.x,self.y)
    end,
    rnd_move = false,
-   dest_x = camp_fire.x,
-   destination_x = function(self)
-    local camp_fire_center = camp_fire.x + 4
-    local left_border = camp_fire_center - 48
-    local right_border = camp_fire_center + 48
-
-    if self.x > (self.dest_x - 2) and self.x < (self.dest_x + 2) then self.rnd_move = false end
-
+   destination = camp_fire,
+   choose_destination = function(self)
     if within_town(self.x) then
-     if self.rnd_move == false then
-      self.dest_x = left_border + flr(rnd(right_border - left_border))
-      self.rnd_move = true
-     end
+     self:choose_rand_dest_in_town()
     else
-     self.dest_x = camp_fire.x
+     self.destination = camp_fire
+    end
+   end,
+   choose_rand_dest_in_town = function(self)
+    if is_overlapping(self, self.destination) then self.rnd_move = false end
+    if self.rnd_move == false then
+     self.destination = {
+      x = town_left_border + flr(rnd(town_right_border - town_left_border)),
+      width = 8
+      }
+     self.rnd_move = true
     end
    end
   }
@@ -174,8 +179,8 @@ function level_update()
  --move civilians
  for civ in all(civilians) do
   local speed
-  civ:destination_x()
-  if (civ.x - civ.dest_x > 0) then
+  civ:choose_destination()
+  if (civ.x - civ.destination.x > 0) then
    speed = -1
   else
    speed = 1
@@ -219,10 +224,7 @@ function level_draw()
 end
 
 function within_town(x)
- local camp_fire_center = camp_fire.x + 4
- local left_border = camp_fire_center - 48
- local right_border = camp_fire_center + 48
- return x > left_border and x < right_border
+ return x > town_left_border and x < town_right_border
 end
 
 function manage_level_changes()
