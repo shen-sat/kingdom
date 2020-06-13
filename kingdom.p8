@@ -29,6 +29,7 @@ function run_level()
   town_left_border = town_center - 48
   town_right_border = town_center + 48
   hunters = {}
+  rabbits = {}
 
   
   player = {
@@ -52,31 +53,6 @@ function run_level()
     return self.x + self.width/2
    end
   }
-
-  rabbit = {
-   sprite = 12,
-   x = 154,
-   y = ground_y - 8,
-   width = 6,
-   height = 5,
-   burrow = burrow,
-   destination = burrow,
-   rnd_move = false,
-   wait = 0
-  }
-
-  -- if is_overlapping(rabbit, rabbit.destination) then rabbit.rnd_move = false end
-  -- if not rabbit.rnd_move then
-  --  local left_border = rabbit.burrow - 32
-  --  local left_border = rabbit.burrow + 40
-  --  rabbit.destination = {
-  --   x = left_border + flr(rnd(right_border - left_border)),
-  --   width = 8
-  --  }
-  --  rabbit.rnd_move = true
-  -- end
-  -- local rabbit_speed = (rabbit.x - rabbit.destination.x > 0) and -1 or 1
-  -- rabbit += rabbit_speed
 
   camp_fire = {
    sprite = 6,
@@ -237,27 +213,15 @@ function level_update()
   civ:update()
  end
 
- if is_overlapping(rabbit, rabbit.destination) and rabbit.rnd_move then 
-  rabbit.rnd_move = false
-  rabbit.wait = counter + 60
- end
- if not rabbit.rnd_move and counter > rabbit.wait then
-  local left_border = rabbit.burrow:center_x() - 44
-  local right_border = rabbit.burrow:center_x() + 44
-  rabbit.destination = {
-   x = left_border + flr(rnd(right_border - left_border)),
-   width = 8
-  }
-  rabbit.rnd_move = true
- end
- local rabbit_speed
- if counter <= rabbit.wait then 
-  rabbit_speed = 0 
- else
-  rabbit_speed = (rabbit.x - rabbit.destination.x > 0) and -1 or 1
- end
- if counter % 6 == 0 then rabbit.x += rabbit_speed end
+ if #rabbits < 3 then
+  local rab = make_rabbit(burrow:center_x())
+  add(rabbits,rab)
+ end  
 
+ for rabbit in all(rabbits) do
+  rabbit:update() 
+ end
+ 
  manage_button_pressed_counter()
  manage_level_changes()
 end
@@ -295,8 +259,58 @@ function level_draw()
  end
 
  spr(burrow.sprite,burrow.x,burrow.y)
- spr(rabbit.sprite,rabbit.x,rabbit.y)
+ 
+ for rab in all(rabbits) do
+  spr(rab.sprite,rab.x,rab.y)
+ end
+ 
 
+end
+
+
+function make_rabbit(x)
+ local rabbit = {
+  sprite = 12,
+  x = x,
+  y = ground_y - 8,
+  width = 6,
+  height = 5,
+  burrow = burrow,
+  destination = burrow,
+  is_moving = false,
+  wait = 0,
+  speed = function(self)
+   if counter <= self.wait then 
+    return 0 
+   else
+    return (self.x - self.destination.x > 0) and -1 or 1
+   end
+  end,
+  choose_destination = function(self)
+   if is_overlapping(self, self.destination) and self.is_moving then 
+    self.is_moving = false
+    self.wait = counter + 60
+   elseif not self.is_moving and counter > self.wait then
+    local lb = self.burrow:center_x() - 44
+    local rb = self.burrow:center_x() + 44
+    self.destination = make_destination(lb,rb,8)
+    self.is_moving = true
+   end
+  end,
+  update = function(self)
+   self:choose_destination()
+   if counter % 6 == 0 then self.x += self:speed() end
+  end
+ }
+ return rabbit
+end
+
+function make_destination(lb,rb,w)
+ local dest = {
+  x = lb + flr(rnd(rb - lb)),
+  width = w
+ }
+ return dest
 end
 
 function make_hunter(x,y)
