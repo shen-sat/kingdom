@@ -47,7 +47,10 @@ function run_level()
    x = 146,
    y = ground_y - 8,
    width = 8,
-   height = 8
+   height = 8,
+   center_x = function(self)
+    return self.x + self.width/2
+   end
   }
 
   rabbit = {
@@ -55,8 +58,25 @@ function run_level()
    x = 154,
    y = ground_y - 8,
    width = 6,
-   height = 5
+   height = 5,
+   burrow = burrow,
+   destination = burrow,
+   rnd_move = false,
+   wait = 0
   }
+
+  -- if is_overlapping(rabbit, rabbit.destination) then rabbit.rnd_move = false end
+  -- if not rabbit.rnd_move then
+  --  local left_border = rabbit.burrow - 32
+  --  local left_border = rabbit.burrow + 40
+  --  rabbit.destination = {
+  --   x = left_border + flr(rnd(right_border - left_border)),
+  --   width = 8
+  --  }
+  --  rabbit.rnd_move = true
+  -- end
+  -- local rabbit_speed = (rabbit.x - rabbit.destination.x > 0) and -1 or 1
+  -- rabbit += rabbit_speed
 
   camp_fire = {
    sprite = 6,
@@ -217,6 +237,27 @@ function level_update()
   civ:update()
  end
 
+ if is_overlapping(rabbit, rabbit.destination) and rabbit.rnd_move then 
+  rabbit.rnd_move = false
+  rabbit.wait = counter + 60
+ end
+ if not rabbit.rnd_move and counter > rabbit.wait then
+  local left_border = rabbit.burrow:center_x() - 44
+  local right_border = rabbit.burrow:center_x() + 44
+  rabbit.destination = {
+   x = left_border + flr(rnd(right_border - left_border)),
+   width = 8
+  }
+  rabbit.rnd_move = true
+ end
+ local rabbit_speed
+ if counter <= rabbit.wait then 
+  rabbit_speed = 0 
+ else
+  rabbit_speed = (rabbit.x - rabbit.destination.x > 0) and -1 or 1
+ end
+ if counter % 6 == 0 then rabbit.x += rabbit_speed end
+
  manage_button_pressed_counter()
  manage_level_changes()
 end
@@ -373,8 +414,8 @@ __gfx__
 1a1a919133333333cccccccc000101000713310000444400000000000000000000dddd0000000000000000000030000000000000000000000000000000000000
 1aaa999133333333cccccccc00161610017333100477fa2000000000000000000d1111d000000000000000000030000300000000000000000000000000000000
 1999999133333333cccccccc001616101333333147f99af20000000000a00a00d111111d01111110011111100333033000000000000000000000000000000000
-1444442133333333cccccccc00161610144444214f9999a24404404400a00a00d111111d14444421100000013333333300606000000000000000000000000000
-1441441133333333cccccccc01166161144144114a9999a2440440440a9aa9a0d111111d14414411100100113333333300606000000000000000000000000000
+1444442133333333cccccccc00161610144444214f9999a24404404400a00a00d111111d14444421100000013333333301616100000000000000000000000000
+1441441133333333cccccccc01166161144144114a9999a2440440440a9aa9a0d111111d14414411100100113333333301616100000000000000000000000000
 1444442133333333cccccccc16666661144444214fa99a72440440440a9aa9a0d111111d14444421100000013333333301616100000000000000000000000000
 1444422133333333cccccccc1666dd101444422104aa772065665665675775760d1111d014444221100000013333333316666100000000000000000000000000
 0141121033333333cccccccc161d16100141121000442200555555556656656600dddd0001411210010110100333333016161000000000000000000000000000
